@@ -1,12 +1,13 @@
 let Remote = function () {
 
-    this.code = new Array();
+    this.code = undefined;
     this.volume = undefined;
 
 }
 
-Remote.prototype.changeChanel = function(){
-
+Remote.prototype.changeChanel = function(chanel,tivi){
+    this.code = chanel;
+    return tivi.chanelChange(this.code);
 }
 Remote.prototype.volumeDown = function(television){
     if (television.volume == 0){
@@ -40,8 +41,8 @@ let Television = function () {
 
 }
 
-Television.prototype.chanelChange = function () {
-
+Television.prototype.chanelChange = function (chanel) {
+        return this.chanel = chanel;
 }
 Television.prototype.changeVolume = function () {
     this.volume += 1
@@ -124,6 +125,11 @@ function initRemote() {
         _button.style.margin = "5px 5px";
         _button.style.border ="1px solid #ccc";
         _button.style.cssFloat ="left";
+        _button.addEventListener('click',function () {
+
+            document.getElementById('chanel').innerText = remote.changeChanel(this.value,tivi);
+            //console.log(remote);
+        });
 
         _control.appendChild(_button);
 
@@ -131,6 +137,7 @@ function initRemote() {
 
 
 }
+
 
 function initTv() {
     let _tivi = document.createElement('div');
@@ -170,6 +177,16 @@ function initVolume() {
     }
 }
 
+function initChanel() {
+    let _chanel = document.createElement('p');
+        _chanel.id = "chanel";
+        _chanel.style.width = "40px";
+        _chanel.style.height ="40px";
+        _chanel.style.backgroundColor = "orange";
+        _chanel.style.textAlign = "center";
+        document.getElementById('tivi').appendChild(_chanel);
+
+}
 
 
 function remoteVolumeUp() {
@@ -185,15 +202,17 @@ function turnOffTv() {
     let display = document.getElementById('tivi');
         remote.turnOnOfTv(tivi);
         document.getElementById('power').value = tivi.switch();
-        tivi.status ? display.style.backgroundColor = "lime" : display.style.backgroundColor = "red"
+        tivi.status ? display.style.backgroundColor = "lime" : display.style.backgroundColor = "red";
 
+    if (tivi.status){
+        initChanel();
+    }
 }
 
 
 
 
 function init() {
-
     initTv();
     initRemote();
     //console.log(remote.code.length);
